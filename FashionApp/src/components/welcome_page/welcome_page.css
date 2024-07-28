@@ -1,0 +1,32 @@
+.landing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    gap: 4rem;
+  }
+  h1 {
+    margin-bottom: 20px;
+    font-size: 50px;
+    color: white !important;
+    color: #333;
+  }
+  span{
+    color: rgb(192, 20, 106);
+  }
+ .welcome-btn{
+    background-color: #28a745 !important;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 2em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+ .welcome-btn:hover {
+    background-color: #218838 !important;
+  }
