@@ -41,7 +41,7 @@ const MultiStepPopup = ({ onClose }) => {
     const handleGenerate = () => {
         const generatedPrompt = `Full image of a ${gender} model wearing ${color}-coloured, ${fabric} ${clothing} with ${pattern} pattern, standing in a ${location}.`;
         setPrompt(generatedPrompt);
-        navigate(`/generate?prompt=${encodeURIComponent(generatedPrompt)}`);
+        navigate(`/imageAI/generate?prompt=${encodeURIComponent(generatedPrompt)}`);
     };
     const handleSuggestionClick = (suggestion, setter) => {
         setter(suggestion);

@@ -1,0 +1,33 @@
+.add-form-container{
+    margin-left: 5rem;
+}
+.add-form-container .add-form{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.add-form-container .row{
+    gap: 1rem !important;
+}
+.add-form-container label{
+    text-align: left;
+    font-size: 22px;
+    color: purple;
+    margin-bottom: 2rem;
+}
+.add-form-container input{
+    width: 70vw !important;
+    height: 4rem !important;
+}
+.add-form-container .btn{
+    width: 6rem;
+    height: 3rem;
+    border-radius: 10px;
+
+    background-color: purple !important;
+    border: none !important;
+    
+}
+/* .file-control-file{
+    height: 10rem !important;
+} */

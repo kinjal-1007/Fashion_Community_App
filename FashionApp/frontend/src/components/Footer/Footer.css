@@ -1,0 +1,26 @@
+.f-info-links a{
+    text-decoration: none;
+    margin-right: 1rem;
+}
+.f-info-socials i{
+    font-size: 1.3rem;
+    margin-right: 1.5rem;
+}
+.f-info-links a:hover{
+    text-decoration: underline !important;
+}
+.f-info-links, .f-info-socials, .f-info-brand{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.f-info{
+    text-align: center;
+    display: flex;
+    background-color: #ebebeb;
+    height: 9rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+}

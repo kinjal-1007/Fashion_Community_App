@@ -1,0 +1,50 @@
+.navbar{
+    height: 5rem;
+    /* position: fixed; */
+    width: 100vw;
+    z-index: 500;
+}
+.navbar i{
+    margin-left: 2rem;
+}
+.nav-link{
+    font-size: 20px;
+    font-weight: bold;
+}
+.navbar-nav{
+    margin-right: 2rem;
+}
+.website-name{
+    font-size: 1.6rem;
+    color: purple !important;
+    text-align: left;
+    margin-right:1.5rem;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+}
+.fa-connectdevelop{
+    color: purple;
+    font-size: 2rem;
+}
+.logout {
+    color: rgb(190, 47, 47);
+}
+.search-bar{
+    height: 2.5rem !important;
+    width: 30rem !important;
+    border-radius: 30px;
+}
+.search-btn{
+    border-radius: 30px;
+    width: 6rem;
+}
+.generator{
+    margin-right: 5rem;
+    color: purple;
+}
+.nav-link i{
+    margin-left: 4px;
+    font-size: 21px;
+}

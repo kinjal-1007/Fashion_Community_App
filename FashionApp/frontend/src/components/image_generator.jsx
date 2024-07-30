@@ -130,6 +130,7 @@ const fetchImage = async (prompt) => {
             />
           </div>
         )} */}
+        <br/> <br /> <br /> <br /> <br /> <br />
           </div>
         </>
     );

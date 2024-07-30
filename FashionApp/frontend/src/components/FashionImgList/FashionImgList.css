@@ -1,0 +1,68 @@
+h1{
+    text-align: left;
+    margin-left: 5rem;
+    margin-top: 3rem;
+}
+.show-list .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: space-evenly;
+    margin-left: 6rem;
+}
+.card{
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+    /* border: none !important; */
+}
+.card-img-top {
+    border-radius: 1rem !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+.card-body {
+    padding: 0rem !important;
+}
+.card-text p{
+    
+    font-weight: bold !important;
+}
+.card-title{
+    margin-top: 1.5rem;
+    text-align: left;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: purple;
+}
+.likes-comments{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 23px;
+    margin-right: 1rem;
+}
+.card-img-overlay {
+    opacity: 0;
+}
+.card-img-overlay:hover {
+    opacity: 0.2;
+    background-color: white;
+}
+.add-btn {
+    background-color: purple !important;
+    border: none !important;
+    right: -40rem;
+    top: -3rem;
+    position: absolute;
+
+}
+.card-text i{
+    margin-right: 4px;
+}
+.card-text .likes{
+    color: rgb(190, 47, 47);
+}
+.fa-comments{
+    color: purple;
+}
