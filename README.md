@@ -62,6 +62,7 @@ Here are some screenshots of the website:
 ![Image Generation](./assets/img3.png)
 ![Image Generation](./assets/img4.png)
 ![Image Generation](./assets/img5.png)
+![Image Generation](./assets/img6.png)
 
 ### Community Interaction
 ![Community Interaction](./assets/community1.png)
