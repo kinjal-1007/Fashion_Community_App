@@ -14,6 +14,44 @@ const multer  = require('multer')
 const {storage}=require('./cloudConfig.js');
 const upload = multer({ storage })
 
+
+const session=require("express-session");
+const flash=require("connect-flash");
+const bodyParser = require('body-parser')
+const morgan = require('morgan')
+const passport=require("passport");
+const LocalStrategy=require("passport-local");
+const User=require("./models/user.js");
+const listRouter=require("./routes/list.js");
+const commentRouter=require("./routes/comment.js");
+const userRouter=require("./routes/user.js");
+
+const sessionOptions={
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+      expires: Date.now() + 7*24*60*60*1000,
+      maxAge: 7*24*60*60*1000,
+      httpOnly: true,
+  }
+};
+
+app.use(morgan('dev'))
+app.use(
+	bodyParser.urlencoded({
+		extended: false
+	})
+)
+app.use(bodyParser.json())
+app.use(session(sessionOptions));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 main().then(()=>{
    console.log("connected to db.");
 })
@@ -26,140 +64,46 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
+
+app.use( (req, res, next) => {
+  console.log('req.session', req.session);
+  return next();
+});
+
 app.get("/api", (req, res) => {
     res.json({
         message: "Hello world",
     });
 });
-//index
-app.get('/test1', async (req, res) => {
-    try {
-      const result = await FashionImg.find({});
-      res.json(result); 
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-//show
-app.get('/list/:id', async (req, res) => {
-  try {
-    const fashionImg = await FashionImg.findById(req.params.id).populate('comments');;
-    if (!fashionImg) {
-      return res.status(404).json({ message: 'Fashion image not found' });
-    }
-    res.json(fashionImg);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-//new
-app.get("/list/new", (req,res)=>{
-  res.send("Your new form");
+
+app.use((req,res,next)=>{
+  res.locals.success=req.flash("success");
+  res.locals.error=req.flash("error");
+  res.locals.currUser=req.user;
+  next();
 })
-//create a new post
-app.post('/list/new', upload.single('image'), async (req, res) => {
-    let url=req.file.path;
-    let filename=req.file.filename;
-    console.log(url);
-    console.log(filename);
-  try {
-    const { title, description, hashtags } = req.body;
-    if(!title){
-      throw new ExpressError(400, "Title missing");
-    }
-    if(!description){
-      throw new ExpressError(400, "Description missing");
-    }
-    const newFashionImg = new FashionImg({
-      title,
-      description,
-      hashtags: hashtags ? hashtags.split(',').map(tag => tag.trim()) : [], 
+
+app.use("/list", listRouter);
+app.use("/list/:id/comments", commentRouter);
+app.use("/", userRouter);
+
+//demouser
+app.get("/demouser", async (req,res)=>{
+    let fakeuser=new User ({
+        email: "student@gmail.com",
+        username: "student",
     });
-    newFashionImg.image={url, filename};
-    await newFashionImg.save();
-    res.status(201).json(newFashionImg);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    let registeredUser= await User.register(fakeuser, "helloworld"); //2nd argument is password //pbkdf2 hashing algorithm
+    res.send(registeredUser);
 });
-// app.post('/list/new', upload.single('image'), (req, res) => {
-//   console.log(req.body);
-//   console.log(req.file);
-
-//   // Handle your logic for saving the new image data here
-
-//   res.json({ message: 'Image uploaded successfully' });
-// });
-//like
-app.post("/list/:id/like", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const fashionImg = await FashionImg.findById(id);
-
-    if (!fashionImg) {
-      return res.status(404).json({ error: 'Image not found' });
-    }
-
-    fashionImg.likes += 1;
-    await fashionImg.save();
-
-    res.json(fashionImg);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-// app.post("/list/new", upload.single('image'), (req, res) => {
-//   console.log(req.body);
-//   console.log(req.file);
-// });
-//delete
-app.delete('/list/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedImage = await FashionImg.findByIdAndDelete(id);
-   
-    if (!deletedImage) {
-      return res.status(404).json({ message: 'Image not found' });
-    }
-    console.log(deletedImage);
-    res.status(200).json({ message: 'Image deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//comments
-app.post("/list/:id/comments", async (req, res) => {
-try {
-  const { id } = req.params;
-  const { comment, rating } = req.body;
-
-  const fashionImg = await FashionImg.findById(id);
-  if (!fashionImg) {
-    return res.status(404).json({ message: "Fashion Image not found" });
-  }
-
-  const newComment = new Comment({ comment, rating, createdAt: new Date() });
-  fashionImg.comments.push(newComment);
-
-  await newComment.save();
-  await fashionImg.save();
-
-  res.status(201).json(fashionImg);
-} catch (error) {
-  console.error('Error adding comment:', error);
-  res.status(500).json({ message: 'Failed to add comment' });
-}
-});
-
 //test to save data in database
 app.get("/test", async (req,res)=>{
     let sample=new FashionImg(
       {
-        title: "Proud to be GenZ",
-        description: "I am my own hero.",
+        title: "Preparing for Graduation",
+        description: "How do I look?",
         image: {
-          url: "https://images.unsplash.com/flagged/photo-1571825142360-17579dba01a9?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          url: "https://images.unsplash.com/photo-1506152450634-209d83087969?q=80&w=1372&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           filename: "design1",
         },
         hashtags: ["#coolsummer","#fashion"]

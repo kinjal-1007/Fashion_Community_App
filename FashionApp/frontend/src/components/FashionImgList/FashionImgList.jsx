@@ -9,7 +9,7 @@ const FashionImgList = () => {
   useEffect(() => {
     const fetchFashionImgs = async () => {
       try {
-        const response = await fetch('http://localhost:4000/test1');
+        const response = await fetch('http://localhost:4000/list');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -23,7 +23,7 @@ const FashionImgList = () => {
 
     fetchFashionImgs();
   }, []);
-
+  
   return (
     <div className='show-list'>
       <h1>Latest Designs</h1>

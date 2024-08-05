@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import './FashionImgDetail.css';
 import './rating.css';
+
 const FashionImgDetail = () => {
   const { id } = useParams();
   const [fashionImg, setFashionImg] = useState(null);
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState(1);
-  
   const navigate=useNavigate();
   useEffect(() => {
     const fetchFashionImg = async () => {
@@ -92,7 +92,12 @@ const FashionImgDetail = () => {
 
     if (form.checkValidity() === false) {
       e.stopPropagation();
+      form.classList.add('was-validated');
+      return;
     } else {
+      form.classList.remove('was-validated');
+    }
+
     const newComment = {
       comment,
       rating,
@@ -113,13 +118,28 @@ const FashionImgDetail = () => {
       }
 
       const updatedImg = await response.json();
-      setFashionImg(updatedImg);
+      console.log('Updated fashionImg:', updatedImg);
+      const fetchFashionImg = async () => {
+        try {
+          const response = await fetch(`http://localhost:4000/list/${id}`);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          setFashionImg(data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+  
+      fetchFashionImg();
+      // setFashionImg(updatedImg);
       setComment('');
       setRating(1);
     } catch (error) {
       console.error('Error submitting comment:', error);
     }
-  }};
+  };
   const handleRatingChange = (e) => {
     setRating(Number(e.target.value));
   };
@@ -172,24 +192,26 @@ const FashionImgDetail = () => {
           <p>{fashionImg.hashtags.join(' ')}</p> 
           <p><i class="fa-solid fa-thumbs-up" onClick={handleLike}></i> {fashionImg.likes}</p>
           </div>
-          <button className="btn btn-danger offset-1 delete-btn mt-2" onClick={handleDelete}>Delete this Image</button>
+          <button className="btn btn-danger offset-1 delete-btn mt-2" onClick={handleDelete}>Delete this Post</button>
+          <button className="btn btn-primary offset-1 edit-btn mt-2">
+          <Link to={`/list/${id}/edit`} style={{ color: 'white', textDecoration: 'none' }}>Edit this Post</Link></button>
           <br/><br/><hr/><br/>
           <div className="comments-section mt-4 offset-1">
           <h4>Comments</h4><br/>
-            <ul className="list-group">
+            <ul className="list-group" style={{listStyleType: 'none' }}>
               {fashionImg.comments.map((comment) => (
-                <div key={comment._id} className="card list-group-item">
+                <li key={comment._id}>
+                <div className="card list-group-item">
                   <p className='card-title'>John Doe{comment.commenter}</p>
                   <p className='card-text'>{comment.comment}</p>
                   {/* <p className='card-text'>Rating: {comment.rating} stars</p> */}
                   <p class="starability-result" data-rating={comment.rating}></p>  
                   <button className='btn btn-sm btn-dark' onClick={() => handleCommentDelete(comment._id)}>Delete</button>
-                
                 </div>
-                
+                </li>
               ))}
             </ul>
-            <form onSubmit={handleCommentSubmit} className="comment-form mt-4 needs-validation" noValidate>
+            <form onSubmit={handleCommentSubmit} noValidate className="comment-form mt-4 needs-validation" >
               <div className="mb-3">
                 <label htmlFor="comment" className="form-label comment-prompt">Add a Comment</label>
                 <textarea 
@@ -199,6 +221,7 @@ const FashionImgDetail = () => {
                   onChange={(e) => setComment(e.target.value)} 
                   required 
                 />
+                  <div className='valid-feedback'>Looks good!</div>
                   <div className="invalid-feedback">
                   Please enter a comment.
                     </div>
