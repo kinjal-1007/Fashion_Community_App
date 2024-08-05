@@ -52,6 +52,20 @@ The platform is designed to foster a community where fashion enthusiasts can gen
 ## Screenshots
 Here are some screenshots of the website:
 
-![Home Screen](./assets/home_screen.png)
-![Image Generation](./assets/image_generation.png)
-![Community Interaction](./assets/community_interaction.png)
+### Home Screen
+![Home Screen](./assets/home1.png)
+![Home Screen](./assets/home2.png)
+
+### Image Generation
+![Image Generation](./assets/img1.png)
+![Image Generation](./assets/img2.png)
+![Image Generation](./assets/img3.png)
+![Image Generation](./assets/img4.png)
+![Image Generation](./assets/img5.png)
+
+### Community Interaction
+![Community Interaction](./assets/community1.png)
+![Community Interaction](./assets/community2.png)
+
+### Add a New Post
+![Add Form](./assets/addForm.png)
