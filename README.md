@@ -7,6 +7,7 @@ This project is a comprehensive fashion design community platform that allows us
 - [Technologies Used](#technologies-used)
 - [Workflow](#workflow)
 - [Features](#features)
+- [Screenshots](#screenshots)
 
 ## Description
 The platform is designed to foster a community where fashion enthusiasts can generate, upload, and share their designs. By leveraging AI for image generation and providing robust community features, the platform aims to be a hub for fashion creativity and interaction.
@@ -24,6 +25,9 @@ The platform is designed to foster a community where fashion enthusiasts can gen
 - **Font awesome**: For icons and styling.
 - **Mongoose**: For MongoDB object modeling.
 - **Dotenv**: For environment variable management.
+- **Passport.js**: For authentication.
+- **express-session**: Session Management
+- **connect-flash**: Flash messages
 
 ## Workflow
 1. **Image Generation**:
@@ -44,3 +48,10 @@ The platform is designed to foster a community where fashion enthusiasts can gen
 - **Responsive Design**: Responsive layout using Bootstrap.
 - **Form Validation**: Client-side form validation using Bootstrap.
 - **Image Sorting**: Images sorted by likes.
+
+## Screenshots
+Here are some screenshots of the website:
+
+![Home Screen](./assets/home_screen.png)
+![Image Generation](./assets/image_generation.png)
+![Community Interaction](./assets/community_interaction.png)
