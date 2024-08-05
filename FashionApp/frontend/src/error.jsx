@@ -9,7 +9,7 @@ const Error = ({ message }) => {
     <div className="alert alert-warning" role="alert">
       <h1 className='alert-heading'>Error</h1>
       <p>{message}</p>
-      <button onClick={() => navigate('/list')}>Go to Home</button>
+      <button className="btn btn-danger" onClick={() => navigate('/list')}>Go to Home</button>
     </div>
   );
 };
