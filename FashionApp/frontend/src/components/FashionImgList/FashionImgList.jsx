@@ -39,6 +39,7 @@ const FashionImgList = () => {
   }, []);
   
   const handleAddNewPost = async () => {
+    console.log(backendUrl);
     try {
         const response = await fetch(`${backendUrl}/list/check-auth`, {
             credentials: 'include',

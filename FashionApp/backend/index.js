@@ -24,13 +24,12 @@ const morgan = require('morgan')
 const passport=require("passport");
 const LocalStrategy=require("passport-local");
 const User=require("./models/user.js");
-const allowedOrigin = process.env.NODE_ENV === 'production' 
-  ? 'https://fashion-community-app-frontend.onrender.com' 
-  : 'http://localhost:5173';
+
 app.use(cors({
-  origin: allowedOrigin,
+  origin: 'https://fashion-community-app-frontend.onrender.com',
   credentials: true
 }));
+app.set("trust proxy",1);
 app.use(morgan('dev'))
 app.use(
 	bodyParser.urlencoded({
@@ -59,6 +58,8 @@ const sessionOptions={
       expires: Date.now() + 7*24*60*60*1000,
       maxAge: 7*24*60*60*1000,
       httpOnly: true,
+      sameSite: 'none',
+      secure: true,
   }
 };
 app.use(session(sessionOptions));
