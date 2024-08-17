@@ -40,6 +40,7 @@ const FashionImgNew = () => {
     try {
       const response = await fetch('http://localhost:4000/list/new', {
         method: 'POST',
+        credentials: 'include',
         // headers: {
         //   'Content-Type': 'application/json',
         // },
@@ -52,6 +53,9 @@ const FashionImgNew = () => {
 
       const data = await response.json();
       console.log('Image saved:', data);
+      if (data.success && data.success.length > 0) {
+        localStorage.setItem('flashMessage', data.success[0]);
+      }
       navigate('/list');
     } catch (error) {
       console.error('Error submitting form:', error);

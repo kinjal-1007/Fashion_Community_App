@@ -2,22 +2,35 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import './FashionImgDetail.css';
 import './rating.css';
-
+import FlashMessage from '../FlashMsg/Flash';
 const FashionImgDetail = () => {
   const { id } = useParams();
   const [fashionImg, setFashionImg] = useState(null);
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState(1);
+  const [currUserId, setCurrUserId] = useState(null);
+  const [flashMessage, setFlashMessage] = useState(null);
   const navigate=useNavigate();
+  useEffect(() => {
+    // Retrieve and clear the flash message from localStorage
+    const message = localStorage.getItem('flashMessage');
+    if (message) {
+        setFlashMessage(message);
+        localStorage.removeItem('flashMessage');
+    }
+}, []);
   useEffect(() => {
     const fetchFashionImg = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/list/${id}`);
+        const response = await fetch(`http://localhost:4000/list/${id}`, {
+          credentials: 'include',
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setFashionImg(data);
+        setFashionImg(data.fashionImg);
+        setCurrUserId(data.currUserId);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -34,7 +47,8 @@ const FashionImgDetail = () => {
 
     try {
       const response = await fetch(`http://localhost:4000/list/${id}/like`, {
-        method: 'POST'
+        method: 'POST',
+        credentials: 'include'
       });
 
       if (!response.ok) {
@@ -42,7 +56,23 @@ const FashionImgDetail = () => {
       }
 
       const data = await response.json();
-      setFashionImg(data);
+      // setFashionImg(data);
+      const fetchFashionImg = async () => {
+        try {
+          const response = await fetch(`http://localhost:4000/list/${id}`,{
+            credentials: 'include'
+          });
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          setFashionImg(data.fashionImg);
+          setCurrUserId(data.currUserId);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      fetchFashionImg();
     } catch (error) {
       console.error('Error liking image:', error);
       // Rollback in case of error
@@ -57,23 +87,50 @@ const FashionImgDetail = () => {
     try {
       const response = await fetch(`http://localhost:4000/list/${id}`, {
         method: 'DELETE',
+        credentials: 'include'
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const data = await response.json();
+        if (data.authenticated === false) {
+          navigate('/login');
+        } else {
+          throw new Error('Network response was not ok');
+        }
       }
 
       const data = await response.json();
+      localStorage.setItem('flashMessage', data.message);
       console.log('Image deleted:', data);
       navigate('/list'); // Redirect to the list of images after deletion
     } catch (error) {
       console.error('Error deleting image:', error);
     }
   };
+  const handleEdit = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/list/check-auth', {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-original-url': `/list/${id}/edit`
+      }
+      });
+      const data = await response.json();
+      if (data.authenticated) {
+        navigate(`/list/${id}/edit`);
+      } else {
+        navigate('/login', { state: { from: `/list/${id}/edit` } });
+      }
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+    }
+  };
   const handleCommentDelete = async (commentId) => {
     try {
       const response = await fetch(`http://localhost:4000/list/${id}/comments/${commentId}`, {
         method: 'DELETE',
+        credentials: 'include'
       });
 
       if (!response.ok) {
@@ -82,6 +139,23 @@ const FashionImgDetail = () => {
 
       const updatedImg = await response.json();
       setFashionImg(updatedImg);
+      const fetchFashionImg = async () => {
+        try {
+          const response = await fetch(`http://localhost:4000/list/${id}`,{
+            credentials: 'include'
+          });
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          setFashionImg(data.fashionImg);
+          setCurrUserId(data.currUserId);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      fetchFashionImg();
+      
     } catch (error) {
       console.error('Error deleting comment:', error);
     }
@@ -111,6 +185,7 @@ const FashionImgDetail = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newComment),
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -121,12 +196,15 @@ const FashionImgDetail = () => {
       console.log('Updated fashionImg:', updatedImg);
       const fetchFashionImg = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/list/${id}`);
+          const response = await fetch(`http://localhost:4000/list/${id}`,{
+            credentials: 'include'
+          });
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
           const data = await response.json();
-          setFashionImg(data);
+          setFashionImg(data.fashionImg);
+          setCurrUserId(data.currUserId);
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -179,6 +257,7 @@ const FashionImgDetail = () => {
   };
   return (
 <div className="fashion-img-detail">
+  <FlashMessage message={flashMessage} type="success" />
       <div className="row">
         <div className="col-md-5 fashion-img-detail-left">
           <img src={fashionImg.image.url} alt={fashionImg.title} className="img-fluid" />
@@ -186,15 +265,18 @@ const FashionImgDetail = () => {
         <div className="col-md-6 fashion-img-detail-right">
           <h1>{fashionImg.title}</h1>
           <div className='image-info'>
-          <p>Posted by: User1{fashionImg.creator}</p>
+          <p>Posted by: {fashionImg.owner ? fashionImg.owner.username : 'User1'}</p>
           <p>Created At :  {formatDate(fashionImg.createdAt)}</p><br/>
           <p>{fashionImg.description}</p>
           <p>{fashionImg.hashtags.join(' ')}</p> 
           <p><i class="fa-solid fa-thumbs-up" onClick={handleLike}></i> {fashionImg.likes}</p>
           </div>
+          {currUserId === fashionImg.owner._id && (
+          <>
           <button className="btn btn-danger offset-1 delete-btn mt-2" onClick={handleDelete}>Delete this Post</button>
-          <button className="btn btn-primary offset-1 edit-btn mt-2">
-          <Link to={`/list/${id}/edit`} style={{ color: 'white', textDecoration: 'none' }}>Edit this Post</Link></button>
+          <button className="btn btn-primary offset-1 edit-btn mt-2" onClick={handleEdit}>Edit this Post</button>
+          </>
+          )}
           <br/><br/><hr/><br/>
           <div className="comments-section mt-4 offset-1">
           <h4>Comments</h4><br/>
@@ -202,15 +284,18 @@ const FashionImgDetail = () => {
               {fashionImg.comments.map((comment) => (
                 <li key={comment._id}>
                 <div className="card list-group-item">
-                  <p className='card-title'>John Doe{comment.commenter}</p>
+                  <p className='card-title'>@{comment.author.username}</p>
                   <p className='card-text'>{comment.comment}</p>
                   {/* <p className='card-text'>Rating: {comment.rating} stars</p> */}
                   <p class="starability-result" data-rating={comment.rating}></p>  
+                  {currUserId === comment.author._id && (
                   <button className='btn btn-sm btn-dark' onClick={() => handleCommentDelete(comment._id)}>Delete</button>
+                  )}
                 </div>
                 </li>
               ))}
             </ul>
+            {currUserId && (
             <form onSubmit={handleCommentSubmit} noValidate className="comment-form mt-4 needs-validation" >
               <div className="mb-3">
                 <label htmlFor="comment" className="form-label comment-prompt">Add a Comment</label>
@@ -253,6 +338,7 @@ const FashionImgDetail = () => {
               </div>
               <button type="submit" className="btn btn-primary mt-2 mb-2">Submit Comment</button>
             </form>
+            )}
           </div>
         </div>
       </div>

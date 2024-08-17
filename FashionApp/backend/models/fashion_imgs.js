@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 const Schema=mongoose.Schema;
 const Comment=require("./comments.js"); // eslint-disable-line no-unused-vars
-
+const User=require("./user.js");
 // const commentSchema = new Schema({
 //   comment: { type: String, required: true },
 //   createdAt: { type: Date, default: Date.now },
@@ -13,7 +13,7 @@ const Comment=require("./comments.js"); // eslint-disable-line no-unused-vars
 const FashionImgSchema=new Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    // user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    owner: { type: Schema.Types.ObjectId, ref: 'User'},
     createdAt: { type: Date, default: Date.now },
     image: {
        url: String,

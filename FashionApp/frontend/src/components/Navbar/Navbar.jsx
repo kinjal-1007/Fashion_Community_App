@@ -1,7 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 const Navbar=()=>{
+  const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            const response = await fetch('http://localhost:4000/logout', {
+                method: 'POST',
+                credentials: 'include', // Include cookies for session management
+            });
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success) {
+                  // Use the redirect URL from the server response
+                  localStorage.setItem('flashMessage', data.message);
+                  navigate(data.redirectUrl);
+              } else {
+                  console.error('Logout failed:', data.message);
+              }
+          } else {
+              console.error('Logout failed with status:', response.status);
+          }
+      }  catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
     return (
         <nav class="navbar navbar-expand-md bg-body-tertiary sticky-top">
         <div class="container-fluid">
@@ -21,9 +45,9 @@ const Navbar=()=>{
           </form>
           <div className="navbar-nav ms-auto">
             <Link className="nav-link generator" to="/imageAI">Generate using FashionVerse<i class="fa-brands fa-gripfire"></i></Link>
-            <Link className="nav-link" to="/signup">Signup</Link>
+            <Link className="nav-link" to="/signup">Sign up</Link>
             <Link className="nav-link" to="/login">Log in</Link>
-            <Link className="nav-link logout" to="/logout">Log out</Link>
+            <button className="nav-link btn btn-link logout" onClick={handleLogout}>Log out</button>
           </div>
         </div>
         </div>

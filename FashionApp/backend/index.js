@@ -6,7 +6,8 @@ const cors = require("cors");
 const app = express();
 const mongoose=require('mongoose');
 const PORT = 4000;
-const MONGO_URL='mongodb://127.0.0.1:27017/fashionDB';
+// const MONGO_URL='mongodb://127.0.0.1:27017/fashionDB';
+const dbUrl=process.env.ATLASDB;
 const FashionImg=require("./models/fashion_imgs.js");
 const ExpressError=require('./utils/ExpressError.js');
 const Comment=require("./models/comments.js");
@@ -16,34 +17,48 @@ const upload = multer({ storage })
 
 
 const session=require("express-session");
+const MongoStore = require("connect-mongo");
 const flash=require("connect-flash");
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const passport=require("passport");
 const LocalStrategy=require("passport-local");
 const User=require("./models/user.js");
-const listRouter=require("./routes/list.js");
-const commentRouter=require("./routes/comment.js");
-const userRouter=require("./routes/user.js");
 
-const sessionOptions={
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-      expires: Date.now() + 7*24*60*60*1000,
-      maxAge: 7*24*60*60*1000,
-      httpOnly: true,
-  }
-};
-
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(morgan('dev'))
 app.use(
 	bodyParser.urlencoded({
 		extended: false
 	})
 )
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+
+const store= MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto: {
+      secret: process.env.SECRET,
+    },
+  touchAfter: 24*3600, 
+});
+store.on("error",()=>{
+ console.log("Error in MONGO SESSION STORE", err);
+});
+
+const sessionOptions={
+  store,
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+      expires: Date.now() + 7*24*60*60*1000,
+      maxAge: 7*24*60*60*1000,
+      httpOnly: true,
+  }
+};
 app.use(session(sessionOptions));
 app.use(flash());
 app.use(passport.initialize());
@@ -58,17 +73,17 @@ main().then(()=>{
 .catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
+  await mongoose.connect(dbUrl);
 }
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
 
 
-app.use( (req, res, next) => {
-  console.log('req.session', req.session);
-  return next();
-});
+
+// app.use( (req, res, next) => {
+//   console.log('req.session', req.session);
+//   return next();
+// });
 
 app.get("/api", (req, res) => {
     res.json({
@@ -83,6 +98,9 @@ app.use((req,res,next)=>{
   next();
 })
 
+const listRouter=require("./routes/list.js");
+const commentRouter=require("./routes/comment.js");
+const userRouter=require("./routes/user.js");
 app.use("/list", listRouter);
 app.use("/list/:id/comments", commentRouter);
 app.use("/", userRouter);

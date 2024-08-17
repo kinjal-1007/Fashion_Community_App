@@ -21,6 +21,7 @@ const SignupForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include'
       });
 
       if (!response.ok) {
@@ -29,6 +30,7 @@ const SignupForm = () => {
 
       const data = await response.json();
       console.log('Server response:', data);
+      localStorage.setItem('flashMessage', data.message);
       navigate("/list");
     } catch (error) {
       console.error('Error during sign up:', error);

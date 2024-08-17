@@ -69,6 +69,9 @@ const EditFashionImg = () => {
       }
 
       const data = await response.json();
+      if(data.message){
+        localStorage.setItem('flashMessage',data.message);
+      }
       navigate(`/list/${id}`); // Redirect back to the detail view
     } catch (error) {
       console.error('Error updating data:', error);
