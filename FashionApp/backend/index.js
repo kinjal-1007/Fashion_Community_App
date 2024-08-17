@@ -24,9 +24,11 @@ const morgan = require('morgan')
 const passport=require("passport");
 const LocalStrategy=require("passport-local");
 const User=require("./models/user.js");
-
+const allowedOrigin = process.env.NODE_ENV === 'production' 
+  ? 'https://fashion-community-app-frontend.onrender.com' 
+  : 'http://localhost:5173';
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: allowedOrigin,
   credentials: true
 }));
 app.use(morgan('dev'))
