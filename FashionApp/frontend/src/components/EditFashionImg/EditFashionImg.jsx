@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const EditFashionImg = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const EditFashionImg = () => {
   useEffect(() => {
     const fetchFashionImg = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/list/${id}/edit`);
+        const response = await fetch(`${backendUrl}/list/${id}/edit`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -59,7 +59,7 @@ const EditFashionImg = () => {
       }
 
     try {
-      const response = await fetch(`http://localhost:4000/list/${id}`, {
+      const response = await fetch(`${backendUrl}/list/${id}`, {
         method: 'PUT',
         body: formDataObj,
       });

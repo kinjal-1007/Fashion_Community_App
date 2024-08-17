@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const SignupForm = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -15,7 +16,7 @@ const SignupForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:4000/signup', {
+      const response = await fetch(`${backendUrl}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

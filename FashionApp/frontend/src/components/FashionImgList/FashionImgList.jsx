@@ -3,6 +3,7 @@ import {Link, useNavigate} from "react-router-dom";
 import './FashionImgList.css';
 import Button from '@mui/material/Button';
 import FlashMessage from '../FlashMsg/Flash';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const FashionImgList = () => {
   const [fashionImgs, setFashionImgs] = useState([]);
   const [flashMessage, setFlashMessage] = useState(null);
@@ -20,7 +21,7 @@ const FashionImgList = () => {
   useEffect(() => {
     const fetchFashionImgs = async () => {
       try {
-        const response = await fetch('http://localhost:4000/list', {
+        const response = await fetch(`${backendUrl}/list`, {
           credentials: 'include'
         });
         if (!response.ok) {
@@ -39,7 +40,7 @@ const FashionImgList = () => {
   
   const handleAddNewPost = async () => {
     try {
-        const response = await fetch('http://localhost:4000/list/check-auth', {
+        const response = await fetch(`${backendUrl}/list/check-auth`, {
             credentials: 'include',
             headers: {
               'Content-Type': 'application/json',

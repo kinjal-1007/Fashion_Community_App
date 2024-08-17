@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import './FashionImgNew.css';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const FashionImgNew = () => {
     const [newImage, setNewImage] = useState({
         title: '',
@@ -38,7 +39,7 @@ const FashionImgNew = () => {
       formData.append('image', file); // Append file
       formData.append('hashtags', newImage.hashtags);
     try {
-      const response = await fetch('http://localhost:4000/list/new', {
+      const response = await fetch(`${backendUrl}/list/new`, {
         method: 'POST',
         credentials: 'include',
         // headers: {

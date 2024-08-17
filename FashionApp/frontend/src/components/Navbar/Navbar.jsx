@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const Navbar=()=>{
   const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
-            const response = await fetch('http://localhost:4000/logout', {
+            const response = await fetch(`${backendUrl}/logout`, {
                 method: 'POST',
                 credentials: 'include', // Include cookies for session management
             });

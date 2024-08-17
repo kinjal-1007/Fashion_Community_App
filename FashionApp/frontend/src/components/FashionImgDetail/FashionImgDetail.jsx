@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import './FashionImgDetail.css';
 import './rating.css';
 import FlashMessage from '../FlashMsg/Flash';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const FashionImgDetail = () => {
   const { id } = useParams();
   const [fashionImg, setFashionImg] = useState(null);
@@ -22,7 +23,7 @@ const FashionImgDetail = () => {
   useEffect(() => {
     const fetchFashionImg = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/list/${id}`, {
+        const response = await fetch(`${backendUrl}/list/${id}`, {
           credentials: 'include',
         });
         if (!response.ok) {
@@ -46,7 +47,7 @@ const FashionImgDetail = () => {
     }));
 
     try {
-      const response = await fetch(`http://localhost:4000/list/${id}/like`, {
+      const response = await fetch(`${backendUrl}/list/${id}/like`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -59,7 +60,7 @@ const FashionImgDetail = () => {
       // setFashionImg(data);
       const fetchFashionImg = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/list/${id}`,{
+          const response = await fetch(`${backendUrl}/list/${id}`,{
             credentials: 'include'
           });
           if (!response.ok) {
@@ -85,7 +86,7 @@ const FashionImgDetail = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/list/${id}`, {
+      const response = await fetch(`${backendUrl}/list/${id}`, {
         method: 'DELETE',
         credentials: 'include'
       });
@@ -109,7 +110,7 @@ const FashionImgDetail = () => {
   };
   const handleEdit = async () => {
     try {
-      const response = await fetch('http://localhost:4000/list/check-auth', {
+      const response = await fetch(`${backendUrl}/list/check-auth`, {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +129,7 @@ const FashionImgDetail = () => {
   };
   const handleCommentDelete = async (commentId) => {
     try {
-      const response = await fetch(`http://localhost:4000/list/${id}/comments/${commentId}`, {
+      const response = await fetch(`${backendUrl}/list/${id}/comments/${commentId}`, {
         method: 'DELETE',
         credentials: 'include'
       });
@@ -141,7 +142,7 @@ const FashionImgDetail = () => {
       setFashionImg(updatedImg);
       const fetchFashionImg = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/list/${id}`,{
+          const response = await fetch(`${backendUrl}/list/${id}`,{
             credentials: 'include'
           });
           if (!response.ok) {
@@ -179,7 +180,7 @@ const FashionImgDetail = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:4000/list/${id}/comments`, {
+      const response = await fetch(`${backendUrl}/list/${id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -196,7 +197,7 @@ const FashionImgDetail = () => {
       console.log('Updated fashionImg:', updatedImg);
       const fetchFashionImg = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/list/${id}`,{
+          const response = await fetch(`${backendUrl}/list/${id}`,{
             credentials: 'include'
           });
           if (!response.ok) {
