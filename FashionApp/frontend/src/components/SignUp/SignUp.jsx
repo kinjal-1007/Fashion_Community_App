@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+console.log(backendUrl);
 const SignupForm = () => {
   const [formData, setFormData] = useState({
     username: '',
