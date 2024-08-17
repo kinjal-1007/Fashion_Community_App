@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FlashMessage from '../FlashMsg/Flash'; 
+
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -8,7 +8,7 @@ const LoginForm = () => {
     password: '',
   });
   const navigate = useNavigate();
-  const [flashMessage, setFlashMessage] = useState(null);
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -23,6 +23,7 @@ const LoginForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include'
       });
 
       if (!response.ok) {
@@ -32,18 +33,19 @@ const LoginForm = () => {
 
       const data = await response.json();
       console.log('Server response:', data);
-      setFlashMessage({ type: 'success', message: data.success[0] });
-
+      if (data.success && data.success.length > 0) {
+        localStorage.setItem('flashMessage', data.success[0]);
+      }
       navigate(data.redirectUrl);
     } catch (error) {
       console.error('Error during sign up:', error);
-      setFlashMessage({ type: 'error', message: error.message });
+      
     }
   };
 
   return (
     <div className='add-form-container'>
-      <FlashMessage message={flashMessage?.message} type={flashMessage?.type} /> 
+      
       <h1 className='offset-1 mb-3'>Login</h1>
       <form onSubmit={handleSubmit} noValidate className='add-form offset-1 needs-validation'>
         <div className="row">
